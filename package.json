@@ -4,7 +4,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "start:prod": "turbo run start:prod",
+    "server": "bun --cwd apps/server"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
