@@ -29,7 +29,7 @@
 ## Installation
 
 ```bash
-$ bun install
+$ yarninstall
 ```
 
 ## Running the app
