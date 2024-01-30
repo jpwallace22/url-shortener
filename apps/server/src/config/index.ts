@@ -1,9 +1,10 @@
 export const getConfig = () => ({
-  serverPort: process.env.SERVER_PORT
+  SERVER_PORT: process.env.SERVER_PORT
     ? parseInt(process.env.SERVER_PORT, 10)
     : '',
-  clientPort: process.env.VITE_CLIENT_PORT
+  CLIENT_PORT: process.env.VITE_CLIENT_PORT
     ? parseInt(process.env.VITE_CLIENT_PORT, 10)
     : '',
-  baseUrl: process.env.VITE_BASE_URL || 'http://localhost:',
+  BASE_URL: process.env.VITE_BASE_URL || 'http://localhost:',
+  DATABASE_URL: process.env.DATABASE_URL,
 });

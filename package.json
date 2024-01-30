@@ -2,6 +2,15 @@
   "private": true,
   "scripts": {
     "build": "dotenv -- turbo run build",
+    "db:teardown": "run-s db:dev:rm db:test:rm",
+    "db:dev:rm": "docker compose rm dev-db -s -f -v",
+    "db:dev:up": "docker compose up dev-db -d",
+    "db:dev:deploy": "prisma migrate deploy",
+    "db:dev:restart": "run-s db:dev:rm db:dev:up sleep db:dev:deploy",
+    "db:test:rm": "docker compose rm test-db -s -f -v",
+    "db:test:up": "docker compose up test-db -d",
+    "db:test:deploy": "dotenv -e .env.test -- prisma migrate deploy",
+    "db:test:restart": "run-s db:test:rm db:test:up sleep db:test:deploy",
     "dev": "dotenv -- turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write .",
@@ -11,6 +20,7 @@
     "@repo/eslint-config": "*",
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.56.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^3.1.1",
     "prettier-plugin-svelte": "^3.1.2",
     "turbo": "latest"

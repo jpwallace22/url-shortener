@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { getConfig } from '~/config';
+import { DbService } from '~/db/db.service';
 
 @Module({
   imports: [
@@ -11,6 +12,6 @@ import { getConfig } from '~/config';
     }),
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [DbService],
 })
 export class AppModule {}
