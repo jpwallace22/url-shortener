@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { configuration } from '../src/config';
 import { AppController } from './app.controller';
+import { getConfig } from '~/config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration],
+      load: [getConfig],
     }),
   ],
   controllers: [AppController],

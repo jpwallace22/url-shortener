@@ -5,6 +5,7 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "exports": "./src/contract.ts",
   "scripts": {
     "build": "nest build -b swc",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -24,8 +25,6 @@
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
-    "@ts-rest/core": "^3.33.0",
-    "@ts-rest/nest": "^3.33.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "zod": "^3.22.4"

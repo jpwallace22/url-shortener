@@ -1,8 +1,8 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 
-const base = process.env.APP_URL || '';
-const port = process.env.PORT || '';
+const base = process.env.VITE_BASE_URL || '';
+const server = process.env.SERVER_PORT || '';
 
 export default defineConfig({
 	plugins: [sveltekit()],
@@ -16,7 +16,7 @@ export default defineConfig({
 	},
 	server: {
 		proxy: {
-			'/api': `${base}${port}`
+			'/api': `${base}${server}`
 		}
 	}
 });

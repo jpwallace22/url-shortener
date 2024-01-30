@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "paths": {
+      "~/*": ["src/*"],
+    },
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -16,6 +19,6 @@
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true
-  }
+    "noFallthroughCasesInSwitch": true,
+  },
 }

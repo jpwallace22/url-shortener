@@ -15,7 +15,9 @@
 		"test:unit": "vitest"
 	},
 	"dependencies": {
-		"@repo/ui": "*"
+		"@repo/ui": "*",
+		"@ts-rest/core": "^3.33.0",
+		"server": "*"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.40.1",

@@ -1,15 +1,15 @@
 {
   "private": true,
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "build": "dotenv -- turbo run build",
+    "dev": "dotenv -- turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write .",
-    "start:prod": "turbo run start:prod",
-    "server": "yarn --cwd apps/server"
+    "start:prod": "turbo run start:prod"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
+    "dotenv-cli": "^7.3.0",
     "eslint": "^8.56.0",
     "prettier": "^3.1.1",
     "prettier-plugin-svelte": "^3.1.2",
