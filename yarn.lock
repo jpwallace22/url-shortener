@@ -5110,6 +5110,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"flowbite-svelte-icons@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "flowbite-svelte-icons@npm:1.2.1"
+  peerDependencies:
+    svelte: ^3.54.0 || ^4.0.0 || ^5.0.0
+    tailwind-merge: ^2.0.0
+    tailwindcss: ^3.3.2
+  checksum: 3a394d1fc749e182f5bd3f0686e32375e05a847fb1ff36bd660c5293abb2da859e0b6ff7bd3504c33d520b11fec8f50c6b0c6a2f17e1d8d14d81b216e5db8dc0
+  languageName: node
+  linkType: hard
+
 "flowbite-svelte@npm:^0.44.22":
   version: 0.44.22
   resolution: "flowbite-svelte@npm:0.44.22"
@@ -6075,6 +6086,13 @@ __metadata:
   version: 1.1.0
   resolution: "is-plain-obj@npm:1.1.0"
   checksum: daaee1805add26f781b413fdf192fc91d52409583be30ace35c82607d440da63cc4cac0ac55136716688d6c0a2c6ef3edb2254fecbd1fe06056d6bd15975ee8c
+  languageName: node
+  linkType: hard
+
+"is-promise@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "is-promise@npm:4.0.0"
+  checksum: ebd5c672d73db781ab33ccb155fb9969d6028e37414d609b115cc534654c91ccd061821d5b987eefaa97cf4c62f0b909bb2f04db88306de26e91bfe8ddc01503
   languageName: node
   linkType: hard
 
@@ -9727,6 +9745,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"svelte-forms@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "svelte-forms@npm:2.3.1"
+  dependencies:
+    is-promise: "npm:^4.0.0"
+  checksum: 4e47913b2f2538257cbb853ce39ccac6ed461c688e067c849ca5bc0ae883f3ce4c250235732d138addb2f5e9f2847686198268b5854f75871646bef860ad99bb
+  languageName: node
+  linkType: hard
+
 "svelte-hmr@npm:^0.15.3":
   version: 0.15.3
   resolution: "svelte-hmr@npm:0.15.3"
@@ -10781,11 +10808,13 @@ __metadata:
     eslint: "npm:^8.56.0"
     flowbite: "npm:^2.2.1"
     flowbite-svelte: "npm:^0.44.22"
+    flowbite-svelte-icons: "npm:^1.2.1"
     postcss: "npm:^8.4.33"
     prettier: "npm:^3.1.1"
     prettier-plugin-svelte: "npm:^3.1.2"
     svelte: "npm:^4.2.8"
     svelte-check: "npm:^3.6.2"
+    svelte-forms: "npm:^2.3.1"
     tailwindcss: "npm:^3.4.1"
     tslib: "npm:^2.6.2"
     typescript: "npm:^5.3.3"
