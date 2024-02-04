@@ -7,4 +7,6 @@ export const getConfig = () => ({
     : '',
   BASE_URL: process.env.VITE_BASE_URL || 'http://localhost:',
   DATABASE_URL: process.env.DATABASE_URL,
+  PUBLIC_APP_URL: process.env.PUBLIC_APP_URL,
+  PUBLIC_API_URL: process.env.PUBLIC_API_URL,
 });

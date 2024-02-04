@@ -2,15 +2,6 @@
   "private": true,
   "scripts": {
     "build": "dotenv -- turbo run build",
-    "db:teardown": "run-s db:dev:rm db:test:rm",
-    "db:dev:rm": "docker compose rm dev-db -s -f -v",
-    "db:dev:up": "docker compose up dev-db -d",
-    "db:dev:deploy": "prisma migrate deploy",
-    "db:dev:restart": "run-s db:dev:rm db:dev:up sleep db:dev:deploy",
-    "db:test:rm": "docker compose rm test-db -s -f -v",
-    "db:test:up": "docker compose up test-db -d",
-    "db:test:deploy": "dotenv -e .env.test -- prisma migrate deploy",
-    "db:test:restart": "run-s db:test:rm db:test:up sleep db:test:deploy",
     "dev": "dotenv -- turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write .",
@@ -31,6 +22,10 @@
   "workspaces": [
     "apps/*",
     "packages/*"
+  ],
+  "nohoist": [
+    "flowbite",
+    "flowbite-svelte"
   ],
   "packageManager": "yarn@4.0.2"
 }

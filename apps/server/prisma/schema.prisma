@@ -9,10 +9,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id Int @id @default(autoincrement())
+model Url {
+  url_id String @id 
+  date DateTime @default(now())
+  updated_att DateTime @updatedAt
+
+  short_url String 
   url String 
-  hash String
-  locked Boolean? @default(false)
-  password String?
+
+  clicks Int @default(0)
+  hash String? 
 }
