@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { DbService } from '../db/db.service';
 import { ShortenUrlDto } from 'src/url/dto';
 import { ConfigService } from '@nestjs/config';
@@ -14,7 +18,7 @@ export class UrlService {
 
   private ID_SIZE = 10;
 
-  async createUrl({ url, password }: ShortenUrlDto) {
+  async createNewUrl({ url, password }: ShortenUrlDto) {
     const hash = password ? await argon2.hash(password) : null;
     const id = nanoid(this.ID_SIZE);
     const short_url = new URL(id, this.config.get('PUBLIC_API_URL')).toString();
@@ -29,5 +33,30 @@ export class UrlService {
     });
 
     return response;
+  }
+
+  async verify(id: string, password: string) {
+    try {
+      const data = await this.db.url.findFirst({
+        where: {
+          url_id: id,
+        },
+      });
+
+      if (!data || !data.hash) throw new NotFoundException();
+
+      const isValid = await argon2.verify(data.hash, password);
+
+      if (!isValid) throw new UnauthorizedException();
+
+      return data.url;
+    } catch (e) {
+      if (e instanceof UnauthorizedException)
+        throw new UnauthorizedException(
+          'Password and/or the provided URL do not match',
+        );
+
+      throw new NotFoundException();
+    }
   }
 }

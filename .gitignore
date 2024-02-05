@@ -12,6 +12,7 @@ coverage
 # misc
 .DS_Store
 *.pem
+.vscode/settings.json
 
 # debug
 npm-debug.log*
