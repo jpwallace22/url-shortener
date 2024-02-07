@@ -1,5 +1,5 @@
 <script>
-  import AnimatedBackground from '$lib/AnimatedBackground.svelte';
+  import AnimatedBackground from '../lib/common/AnimatedBackground.svelte';
   import '../app.css';
 </script>
 

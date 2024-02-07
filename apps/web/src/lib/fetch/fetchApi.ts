@@ -1,12 +1,10 @@
 import { PUBLIC_API_URL } from '$env/static/public';
 
-export async function fetchApi<T>(
-  path: string,
-  init?: RequestInit
-): Promise<{ data: T; loading: boolean; error?: string }> {
-  let data = null;
-  let loading = true;
-  let error;
+type FetchApiResponse<T> = { data?: T & { statusCode: number }; error?: string | string[] | null };
+
+export async function fetchApi<T>(path: string, init?: RequestInit): Promise<FetchApiResponse<T>> {
+  let data: FetchApiResponse<T>['data'];
+  let error: FetchApiResponse<T>['error'] = null;
 
   const url = new URL(path, PUBLIC_API_URL);
 
@@ -19,17 +17,16 @@ export async function fetchApi<T>(
       ...init
     });
     data = await res.json();
-  } catch (e) {
-    console.error('[FetchAPI]:', error);
-    if (e instanceof Error) {
-      if (Array.isArray(e.message)) {
-        error = e.message.join(', ');
-      }
-      error = e.message || 'An error occurred';
+    if (data && data?.statusCode >= 400) {
+      throw data;
     }
-  } finally {
-    loading = false;
+  } catch (e) {
+    console.error('[FetchAPI]:', e);
+    if (e instanceof Error || (e && typeof e === 'object' && 'message' in e)) {
+      error = e.message as string | string[];
+    }
+    return { data: undefined, error };
   }
 
-  return { data, loading, error };
+  return { data, error: undefined };
 }

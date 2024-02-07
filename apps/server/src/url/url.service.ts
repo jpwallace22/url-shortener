@@ -1,5 +1,7 @@
 import {
+  HttpException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,6 +10,7 @@ import { ShortenUrlDto } from 'src/url/dto';
 import { ConfigService } from '@nestjs/config';
 import { nanoid } from 'nanoid';
 import * as argon2 from 'argon2';
+import QRCode from 'qrcode';
 
 @Injectable()
 export class UrlService {
@@ -22,6 +25,7 @@ export class UrlService {
     const hash = password ? await argon2.hash(password) : null;
     const id = nanoid(this.ID_SIZE);
     const short_url = new URL(id, this.config.get('PUBLIC_API_URL')).toString();
+    const qr_code = await this.generateQRCode(short_url);
 
     const { hash: _removed, ...response } = await this.db.url.create({
       data: {
@@ -29,6 +33,7 @@ export class UrlService {
         url,
         short_url,
         hash,
+        qr_code,
       },
     });
 
@@ -57,6 +62,23 @@ export class UrlService {
         );
 
       throw new NotFoundException();
+    }
+  }
+
+  /**
+   * @returns Base64 encoded png image
+   */
+  async generateQRCode(url: string): Promise<string> {
+    try {
+      const data = await QRCode.toDataURL(url, {
+        scale: 5,
+        margin: 2,
+      });
+      return data;
+    } catch (error) {
+      if (error instanceof Error)
+        throw new InternalServerErrorException(error.message);
+      throw error;
     }
   }
 }
