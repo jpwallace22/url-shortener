@@ -1,0 +1,30 @@
+set dotenv-load
+
+BIN := "./bin/server"
+
+stop_containers:
+	@echo "Stopping other docker container"
+	@if [ $$(docker ps -q) ]; then \
+		echo "found and stopped containers"; \
+		docker stop $$(docker ps -q); \
+	else \
+		echo "no containers running..."; \
+	fi
+
+start_db: 
+	@docker compose up dev-db -d
+
+build: 
+	@if [ -f "{{ BIN }}" ]; then \
+		rm -rf {{ BIN }}; \
+		echo "Deleted {{ BIN }}"; \
+	fi
+	@echo "Building binary..."
+	@go build -o {{ BIN }} cmd/*.go
+	@echo "Binary build to {{ BIN }}"
+
+run: build
+	@./{{ BIN }}
+
+dev: start_db build
+	@$(go env GOPATH)/bin/air --build.cmd "just build" --build.bin "{{ BIN }}" 
