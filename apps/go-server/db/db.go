@@ -6,7 +6,7 @@ import (
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"
-	"github.com/jpwallace22/link-shortener/entity"
+	"github.com/jpwallace22/link-shortener/api"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -40,7 +40,7 @@ func Init() (*gorm.DB, error) {
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	db.AutoMigrate(&entity.Url{})
+	db.AutoMigrate(&api.Url{})
 
 	return db, nil
 }
