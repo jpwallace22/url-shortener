@@ -25,7 +25,7 @@ type Url struct {
 	Url       string    `json:"url" validate:"required,url"`
 	QrCode    string    `json:"qr_code"`
 	Clicks    *int      `gorm:"default:0" json:"clicks"`
-	Password  string    `gorm:"-" json:"password"`
+	Password  *string   `gorm:"-" json:"password" validate:"omitempty,max=72,min=8"`
 	Hash      []byte    `json:"-"`
 }
 
@@ -34,37 +34,69 @@ type UrlModel struct {
 	Validator *validator.Validate
 }
 
-// POST /url/shorten
+// POST /urls/shorten
 func (m *UrlModel) shorten(w http.ResponseWriter, r *http.Request) {
 	createHandler(w, r, func() *JSONError {
 		var url Url
 		if err := json.NewDecoder(r.Body).Decode(&url); err != nil {
-			println("FAILED")
-			return &JSONError{400, "Bad Request"}
+			return &JSONError{Code: http.StatusBadRequest}
 		}
 
 		if err := m.Validator.Struct(url); err != nil {
 			errors := TranslateErrors(err)
-			return &JSONError{400, errors}
+			return &JSONError{Code: http.StatusBadRequest, Message: errors}
 		}
 
-		if url.Password != "" {
-			hash, err := bcrypt.GenerateFromPassword([]byte(url.Password), 1)
+		if url.Password != nil {
+			hash, err := bcrypt.GenerateFromPassword([]byte(*url.Password), bcrypt.MinCost)
 			if err != nil {
-				return &JSONError{500, "Internal Error"}
+				return &JSONError{Code: http.StatusInternalServerError}
 			}
 			url.Hash = hash
 		}
 
 		pngBytes, err := qrcode.Encode("https://example.org", qrcode.Medium, 256)
 		if err != nil {
-			return &JSONError{500, "Internal Error"}
+			return &JSONError{Code: http.StatusInternalServerError}
 		}
 
 		url.QrCode = "data:image/png;base64," + base64.StdEncoding.EncodeToString(pngBytes)
 		url.ShortUrl, url.ID = generateShortURL()
 
 		m.DB.Create(&url)
+		render.JSON(w, r, url)
+		return nil
+	})
+}
+
+type verifyUrlRequest struct {
+	ID       string `json:"url_id" validate:"required"`
+	Password string `json:"password" validate:"required,max=72,min=8"`
+}
+
+// POST /urls/verify
+func (m *UrlModel) verify(w http.ResponseWriter, r *http.Request) {
+	createHandler(w, r, func() *JSONError {
+		var url Url
+		var body verifyUrlRequest
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			return &JSONError{Code: 400}
+		}
+
+		if err := m.Validator.Struct(body); err != nil {
+			errors := TranslateErrors(err)
+			return &JSONError{Code: 400, Message: errors}
+		}
+
+		result := m.DB.First(&url, "id = ?", body.ID)
+		if result.Error != nil {
+			return &JSONError{Code: 404}
+		}
+
+		if err := bcrypt.CompareHashAndPassword(url.Hash, []byte(body.Password)); err != nil {
+			return &JSONError{Code: 404}
+		}
+
 		render.JSON(w, r, url)
 		return nil
 	})
@@ -100,7 +132,7 @@ func generateShortURL() (string, string) {
 		path = path[:pathLength]
 	}
 
-	appUrl := os.Getenv("PUBLIC_APP_URL")
+	appUrl := os.Getenv("PUBLIC_API_URL")
 	shortUrl := fmt.Sprintf("%s/%s", appUrl, path)
 	return shortUrl, path
 }

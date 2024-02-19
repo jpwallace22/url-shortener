@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "make build"
+    "build": "just build",
+    "dev": "just dev"
   }
 }

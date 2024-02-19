@@ -10,6 +10,8 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/jpwallace22/link-shortener/api"
 	"github.com/jpwallace22/link-shortener/db"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 )
 
 func main() {
@@ -30,6 +32,12 @@ func main() {
 	router := api.BuildRouter(&ctx)
 
 	port := fmt.Sprintf(":%s", os.Getenv("SERVER_PORT"))
+	h2s := &http2.Server{}
+	server := &http.Server{
+		Addr:    port,
+		Handler: h2c.NewHandler(router, h2s),
+	}
+
 	fmt.Printf("Server is running on http://localhost%s\n", port)
-	log.Fatal(http.ListenAndServe(port, router))
+	log.Fatal(server.ListenAndServe())
 }

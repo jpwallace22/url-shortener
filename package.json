@@ -2,10 +2,12 @@
   "private": true,
   "scripts": {
     "build": "dotenv -- turbo run build",
-    "dev": "dotenv -- turbo run dev",
+    "dev:ts": "dotenv -- turbo run dev --filter=!./apps/go-server",
+    "dev:go": "dotenv -- turbo run dev --filter=!./apps/server",
     "lint": "turbo run lint",
     "format": "prettier --write .",
-    "start:prod": "turbo run start:prod"
+    "start:prod": "turbo run start:prod",
+    "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",

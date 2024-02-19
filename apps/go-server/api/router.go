@@ -1,11 +1,14 @@
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -17,6 +20,9 @@ type Context struct {
 func BuildRouter(ctx *Context) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(
+		cors.Handler(cors.Options{
+			AllowedOrigins: []string{"*"},
+		}),
 		middleware.Logger,
 		middleware.AllowContentType("application/json"),
 		render.SetContentType(render.ContentTypeJSON),
@@ -25,7 +31,7 @@ func BuildRouter(ctx *Context) *chi.Mux {
 		middleware.RedirectSlashes,
 		middleware.Recoverer,
 	)
-	r.Route("/url", ctx.Urls.urlRoutes)
+	r.Route("/urls", ctx.Urls.urlRoutes)
 	r.Get("/{id}", ctx.Urls.redirectToUrl)
 
 	// Walk all available routes and log them on initialization
@@ -42,15 +48,22 @@ func BuildRouter(ctx *Context) *chi.Mux {
 
 func (m *UrlModel) urlRoutes(r chi.Router) {
 	r.Post("/shorten", m.shorten)
+	r.Post("/verify", m.verify)
 }
 
 func (m *UrlModel) redirectToUrl(w http.ResponseWriter, r *http.Request) {
 	createHandler(w, r, func() *JSONError {
 		var url Url
+
 		urlId := chi.URLParam(r, "id")
 		result := m.DB.First(&url, "id = ?", urlId)
 		if result.Error != nil {
-			return &JSONError{404, "Not Found"}
+			return &JSONError{Code: http.StatusNotFound}
+		}
+
+		if url.Hash != nil {
+			verificationPage := fmt.Sprintf("%s/verify?id=%s", os.Getenv("PUBLIC_APP_URL"), url.ID)
+			http.Redirect(w, r, verificationPage, http.StatusFound)
 		}
 
 		http.Redirect(w, r, url.Url, http.StatusFound)
@@ -60,6 +73,6 @@ func (m *UrlModel) redirectToUrl(w http.ResponseWriter, r *http.Request) {
 
 func createHandler(w http.ResponseWriter, r *http.Request, f func() *JSONError) {
 	if err := f(); err != nil {
-		sendJSONError(w, err.Message, err.Code)
+		err.WriteResponse(w)
 	}
 }
